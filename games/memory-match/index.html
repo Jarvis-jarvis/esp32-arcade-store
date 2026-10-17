@@ -1,0 +1,50 @@
+<!DOCTYPE html><html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Memory Match</title>
+<style>
+html,body{margin:0;height:100%;background:#0d1b2a;color:#fff;font-family:system-ui,sans-serif;user-select:none;-webkit-user-select:none;touch-action:manipulation;overflow:hidden}
+#top{position:fixed;top:14px;left:0;right:0;text-align:center;font-weight:800;font-size:20px;z-index:5;pointer-events:none}
+#grid{position:absolute;inset:64px 12px 14px;display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:1fr;gap:10px;max-width:480px;margin:0 auto}
+.c{border-radius:14px;background:#1b3a5c;display:flex;align-items:center;justify-content:center;font-size:clamp(28px,9vw,52px);cursor:pointer;transition:background .2s}
+.c.up{background:#ffd54a}
+.c.done{background:#2fcf86;opacity:.85}
+.c span{visibility:hidden}.c.up span,.c.done span{visibility:visible}
+</style></head><body>
+<div id="top">Moves 0 · 0s</div><div id="grid"></div>
+<script src="/lib/arcade.js"></script>
+<script>
+const E=['🍎','🚀','🎲','🐙','🎧','🌵','⚡','🍕'];
+const grid=document.getElementById('grid'),info=document.getElementById('top');
+let cards=[],first=null,lock=false,moves=0,found=0,t0=0,timer=null;
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function secs(){return Math.floor((Date.now()-t0)/1000)}
+function tick(){info.textContent='Moves '+moves+' · '+secs()+'s'}
+function start(){
+  grid.innerHTML='';first=null;lock=false;moves=0;found=0;t0=Date.now();
+  cards=shuffle(E.concat(E)).map((e,i)=>{
+    const d=document.createElement('div');d.className='c';d.innerHTML='<span>'+e+'</span>';
+    d.onclick=()=>flip(i);grid.appendChild(d);return {e:e,d:d,done:false};
+  });
+  clearInterval(timer);timer=setInterval(tick,500);tick();
+}
+function flip(i){
+  const c=cards[i];
+  if(lock||c.done||c.d.classList.contains('up'))return;
+  c.d.classList.add('up');
+  if(first===null){first=i;return}
+  moves++;tick();
+  const a=cards[first];first=null;
+  if(a.e===c.e){
+    a.done=c.done=true;a.d.className='c done';c.d.className='c done';found++;
+    if(found===E.length){
+      clearInterval(timer);
+      const score=Math.max(10,1000-moves*20-secs()*8);
+      setTimeout(()=>Arcade.over(score,start),500);
+    }
+  }else{
+    lock=true;
+    setTimeout(()=>{a.d.classList.remove('up');c.d.classList.remove('up');lock=false},700);
+  }
+}
+Arcade.menu('MEMORY MATCH','Find all 8 pairs. Fewer moves and less time means a higher score.',start);
+</script></body></html>
