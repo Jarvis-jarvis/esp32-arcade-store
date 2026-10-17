@@ -1,0 +1,26 @@
+{
+ "games": [
+  {
+   "id": "memory-match",
+   "title": "Memory Match",
+   "desc": "Flip cards and find all 8 pairs with the fewest moves.",
+   "icon": "🧠",
+   "c1": "#4facfe",
+   "c2": "#00f2fe",
+   "ver": 1,
+   "size": 2606,
+   "sha256": "cbc971664889e984df29aa1e4bb8a1894fa82eef536db1c8d805421ebf22d8d3"
+  },
+  {
+   "id": "wall-pong",
+   "title": "Wall Pong",
+   "desc": "Keep the ball alive. It speeds up with every hit.",
+   "icon": "🏓",
+   "c1": "#f7971e",
+   "c2": "#ffd200",
+   "ver": 1,
+   "size": 2933,
+   "sha256": "6f206b3addd19b39663fc25145d515e4ebb1ba92ac28a7414e07885e420553f9"
+  }
+ ]
+}
